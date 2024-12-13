@@ -1,9 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:notebook/pages/notes_page.dart';
+import 'package:notebook/models/note_database.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  //Initialize db
+  WidgetsFlutterBinding.ensureInitialized();
+  await NoteDatabase.initialize();
+  
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -11,13 +15,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: const Text('Notebook'),
-        ),
-        ),
-      );
+    return const MaterialApp(
+      home: NotesPage(),
+    );
   }
 }
