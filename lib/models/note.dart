@@ -1,10 +1,9 @@
-import 'package:hive/hive.dart';
-
-part 'note.g.dart';
-
-@HiveType(typeId: 0)
 class Note {
-  @HiveField(0)
+  int id;
   String text;
-  Note({required this.text});
+
+  Note({
+    required this.id,
+    required this.text,
+  });
 }

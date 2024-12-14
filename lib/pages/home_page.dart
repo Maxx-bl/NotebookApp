@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notebook/models/note.dart';
+import 'package:notebook/models/note_data.dart';
+import 'package:notebook/pages/editing_note_page.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,53 +13,67 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  void createNewNote() {
+    int id = Provider.of<NoteData>(context, listen: false).getAllNotes().length;
 
-  final db = Hive.box('notesBox');
+    Note newNote = Note(
+      id: id,
+      text: 'new note',
+    );
 
-  void addNote() {
-    db.put(1, Note(text: 'bonjour'));
+    goToNotePage(newNote, true);
   }
 
-  void getNote() {
-    Note note = db.get(1);
-    print(note.text);
-    //return db.get(key);
+  void goToNotePage(Note note, bool isNewNote) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditingNotePage(
+                  note: note,
+                  isNewNote: isNewNote,
+                )));
   }
 
-  void deleteNote() {
-    db.delete(1);
+  void deleteNote(Note note) {
+    Provider.of<NoteData>(context, listen: false).deleteNote(note);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(left: 50, top: 100),
-            child: const Text(
-              'Notes',
-              style: TextStyle(fontFamily: 'BebasNeue', fontSize: 50),
-            ),
-          ),
-          MaterialButton(
-            onPressed: addNote,
-            color: Colors.blue[300],
-            child: const Text('Add a note'),
-          ),
-          MaterialButton(
-            onPressed: getNote,
-            color: Colors.blue[300],
-            child: const Text('Read a note'),
-          ),
-          MaterialButton(
-            onPressed: deleteNote,
-            color: Colors.blue[300],
-            child: const Text('Delete a note'),
-          )
-        ],
-      ),
-    );
+    return Consumer<NoteData>(
+        builder: (context, value, child) => Scaffold(
+              backgroundColor: CupertinoColors.systemGroupedBackground,
+              floatingActionButton: FloatingActionButton(
+                onPressed: createNewNote,
+                elevation: 5,
+                backgroundColor: Colors.grey[200],
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.black,
+                ),
+              ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 75, top: 100),
+                    child: Text(
+                      'Notes',
+                      style: TextStyle(
+                          fontFamily: 'BebasNeue',
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  CupertinoListSection.insetGrouped(
+                    children: List.generate(
+                        value.getAllNotes().length,
+                        (index) => CupertinoListTile(
+                              title: Text(value.getAllNotes()[index].text),
+                            )),
+                  )
+                ],
+              ),
+            ));
   }
 }

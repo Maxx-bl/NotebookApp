@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'models/note.dart';
+import 'package:notebook/models/note_data.dart';
+import 'package:provider/provider.dart';
 import 'pages/home_page.dart';
 
 void main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(NoteAdapter());
-  await Hive.openBox('notesBox');
   runApp(const MyApp());
 }
 
@@ -15,9 +12,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
+    return ChangeNotifierProvider(
+      create: (context) => NoteData(),
+      builder: (context, child) => const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(),
+      ),
     );
   }
 }
