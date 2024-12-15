@@ -56,8 +56,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void createNewBullet() async {
-    int id =
-        Provider.of<NoteData>(context, listen: false).getAllBullets().length;
 
     await showDialog(
         context: context,
@@ -65,6 +63,7 @@ class _HomePageState extends State<HomePage> {
               title: TextField(
                 controller: _controller,
                 decoration: const InputDecoration(hintText: 'New task...'),
+                maxLength: 25,
               ),
               actions: [
                 TextButton(
@@ -79,15 +78,19 @@ class _HomePageState extends State<HomePage> {
               ],
             ));
 
-    Note newBullet = Note(
-      id: id,
-      text: _controller.text,
-      isDone: false,
-    );
+    if(_controller.text.isNotEmpty) {
+      int id = Provider.of<NoteData>(context, listen: false).getAllBullets().length;
 
-    _controller.clear();
+      Note newBullet = Note(
+        id: id,
+        text: _controller.text,
+        isDone: false,
+      );
 
-    Provider.of<NoteData>(context, listen: false).addBullet(newBullet);
+      _controller.clear();
+
+      Provider.of<NoteData>(context, listen: false).addBullet(newBullet);
+      }
   }
 
   void deleteBullet(Note bullet) {
@@ -112,44 +115,43 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black,
                 ),
               ),
-              appBar: AppBar(
-                backgroundColor: CupertinoColors.systemGroupedBackground,
-                actions: [
-                  IconButton(
-                      onPressed: () => setState(() {
-                            isNotePage = true;
-                          }),
-                      icon: const Icon(Icons.note)),
-                  IconButton(
-                      onPressed: () => setState(() {
-                            isNotePage = false;
-                          }),
-                      icon: const Icon(Icons.task)),
-                ],
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(160),
+                child: AppBar(
+                  title: isNotePage? const Text(
+                              'Notes',
+                              style: TextStyle(
+                                  fontFamily: 'BebasNeue',
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold),
+                            )
+                            :
+                            const Text(
+                              'Tasks',
+                              style: TextStyle(
+                                  fontFamily: 'BebasNeue',
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                  scrolledUnderElevation: 0,
+                  backgroundColor: CupertinoColors.systemGroupedBackground,
+                  actions: [
+                    IconButton(
+                        onPressed: () => setState(() {
+                              isNotePage = true;
+                            }),
+                        icon: const Icon(Icons.note)),
+                    IconButton(
+                        onPressed: () => setState(() {
+                              isNotePage = false;
+                            }),
+                        icon: const Icon(Icons.task)),
+                  ],
+                ),
               ),
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              body: ListView(
+                scrollDirection: Axis.vertical,
                 children: [
-                  isNotePage
-                      ? const Padding(
-                          padding: EdgeInsets.only(left: 40, top: 70),
-                          child: Text(
-                            'Notes',
-                            style: TextStyle(
-                                fontFamily: 'BebasNeue',
-                                fontSize: 50,
-                                fontWeight: FontWeight.bold),
-                          ),)
-                      : const Padding(
-                          padding: EdgeInsets.only(left: 40, top: 70),
-                          child: Text(
-                            'Tasks',
-                            style: TextStyle(
-                                fontFamily: 'BebasNeue',
-                                fontSize: 50,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
                   isNotePage
                       ?
                       //Note page
@@ -228,7 +230,10 @@ class _HomePageState extends State<HomePage> {
                                           const Icon(Icons.check_circle_rounded),
                                           Padding(
                                             padding: const EdgeInsets.only(left: 20),
-                                            child: Text(value.getAllBullets()[index].text),
+                                            child: SizedBox(
+                                              width: 210,
+                                              child: Text(value.getAllBullets()[index].text, overflow: TextOverflow.ellipsis)
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -277,7 +282,10 @@ class _HomePageState extends State<HomePage> {
                                           const Icon(Icons.circle_outlined),
                                           Padding(
                                             padding: const EdgeInsets.only(left: 20),
-                                            child: Text(value.getAllBullets()[index].text),
+                                            child: SizedBox(
+                                              width: 210,
+                                              child: Text(value.getAllBullets()[index].text, overflow: TextOverflow.ellipsis)
+                                            ),
                                           ),
                                         ],
                                       ),
