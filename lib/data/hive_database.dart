@@ -5,6 +5,7 @@ import 'package:notebook/models/note.dart';
 class HiveDatabase {
   final db = Hive.box('note_database');
   final dbBullets = Hive.box('bullet_database');
+  final dbSettings = Hive.box('settings');
 
   //Notes
 
@@ -62,5 +63,13 @@ class HiveDatabase {
     }
 
     dbBullets.put('ALL_BULLETS', allBulletsFormatted);
+  }
+
+  bool loadSettings() {
+    return dbSettings.get('LAST_PAGE')??true;
+  }
+
+  void saveSettings(bool isDefaultPageNote) {
+    dbSettings.put('LAST_PAGE', isDefaultPageNote);
   }
 }

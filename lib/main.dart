@@ -11,6 +11,7 @@ void main() async {
   //open db
   await Hive.openBox('note_database');
   await Hive.openBox('bullet_database');
+  await Hive.openBox('settings');
 
   runApp(const MyApp());
 }

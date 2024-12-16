@@ -85,6 +85,9 @@ flutter:
     - family: BebasNeue
       fonts:
         - asset: assets/fonts/bebasneue/BebasNeue-Regular.ttf
+    - family: Heavitas
+      fonts: 
+        - asset: assets/fonts/heavitas/Heavitas.ttf
     # - family: Trajan Pro
     #   fonts:
     #     - asset: fonts/TrajanPro.ttf

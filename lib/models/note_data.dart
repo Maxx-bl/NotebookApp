@@ -72,4 +72,12 @@ class NoteData extends ChangeNotifier {
     notifyListeners();
     db.saveBullets(allBullets);
   }
+
+  bool loadSettings() {
+    return db.loadSettings();
+  }
+
+  void saveSettings(bool isDefaultPageNote) {
+    db.saveSettings(isDefaultPageNote);
+  }
 }
